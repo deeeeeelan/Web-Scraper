@@ -21,3 +21,5 @@ def getmethod():
     return "Please use POST method instead"
 # app.run()
 
+if __name__ == '__main__':
+    app.run()

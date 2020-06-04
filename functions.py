@@ -1,9 +1,9 @@
 from bs4 import BeautifulSoup
+from flask import Flask
 from flaskext.mysql import MySQL
 import constants
 import requests
 import time 
-import config
 import json
 
 def getLinks():
@@ -14,14 +14,14 @@ def getLinks():
     while i <= max:
         j = str(i)
         raw = souped(constants.baseURL+j)
-        time.sleep(20)
+        time.sleep(30)
         findlink = raw.findAll('div', class_='gallery-container')
         for div in findlink:
             r = div.a['href']
             links.append(r)
             # print(links)
         i+=1
-        time.sleep(20)
+        
     
     print(links)
     print(len(links))
@@ -44,7 +44,7 @@ def getData(url):
     i = 0
 
     #for i in url :
-    while i < 5 : 
+    while i < 4 : 
         grabbed = {'link' : '','name' : '','type' : '','price' : '','address' : '','built_up': '','land_area' : '',
         'bedrooms' : '','bathrooms' : '','monthly_installment' : '','land_title' : '','tenure' : '', 'price_per_sqft' : '','maintenance_fee' : 0,'furnishing' : '','state' : ''}
 
@@ -108,10 +108,10 @@ def getData(url):
     dat = json.dumps(data)
     sendToDB(dat)
     print(len(data['list']))
-    return soup
+    return data
 
 def getMonthlyInstallment(price):
-    time.sleep(10)
+    time.sleep(30)
     res = requests.get(constants.monthrepayapi+str(price),headers = constants.header , proxies = constants.proxies)
     parsed = res.json()
     done = parsed[0]["monthlyRepayment"]
@@ -120,14 +120,33 @@ def getMonthlyInstallment(price):
 
 
 def sendToDB(data):
+    app = Flask(__name__)
+    app.secret_key= 'secret'
+    app.config['MYSQL_DATABASE_USER'] = 'b86931380feac2'
+    app.config['MYSQL_DATABASE_PASSWORD'] = 'e5bf2af6'
+    app.config['MYSQL_DATABASE_DB'] = 'heroku_3ddf690ab05fef8'
+    app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-east-05.cleardb.net'
 
-    i = 1
+    #init MySQL
+    # mysql = MySQL(app)
+    # mysql.init_app(app)
+    # print(mysql)
+    # if __name__ == '__main__':
+    #     app.run()
+    mysql = MySQL(app)
+    mysql.init_app(app)
+    conn = mysql.connect()
+    cur = conn.cursor()
 
-    while i < len(data) : 
+    i = 0
+    print(len(data["list"]))
+    a = int(len(data['list']))
 
-        cur = config.mysql.connect.cursor()
-        cur.execute("INSERT INTO scrape (link, name, type,price, address, built_up,land_area, bedrooms,bathrooms, monthly_installment , land_title, tenure, price_per_sqft,furnishing )",data["list"][i]["link"],data["name"][i]["name"],data["list"][i]["type"],data["list"][i]["price"],data["list"][i]["address"],data["list"][i]["built_up"],data["list"][i]["land_area"],data["list"][i]["bedrooms"],data["list"][i]["bathorooms"],data["list"][i]["monthly_installment"],data["list"][i]["land_title"],data["list"][i]["tenure"],data["list"][i]["price_per_sqft"],data["list"][i]["furnishing"])
-        # config.mysql.connection.commit()
+    while i < a : 
+        
+        #cur = conn.cursor()
+        cur.execute("INSERT INTO scraped (links, name, type,price, address, built_up,land_area, bedrooms,bathrooms, monthly_installment , land_title, tenure, price_per_sqft, maintenance_fee , furnishing , state ) VALUES ( %s,%s ,%s ,%s ,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",  (data["list"][i]["link"],data["list"][i]["name"],data["list"][i]["type"],data["list"][i]["price"],data["list"][i]["address"],data["list"][i]["built_up"],data["list"][i]["land_area"],data["list"][i]["bedrooms"],data["list"][i]["bathrooms"],data["list"][i]["monthly_installment"],data["list"][i]["land_title"],data["list"][i]["tenure"],data["list"][i]["price_per_sqft"],data["list"][i]["maintenance_fee"],data["list"][i]["furnishing"],data["list"][i]["state"]))
+        conn.commit()
         # cur.close()
         i+=1
 
