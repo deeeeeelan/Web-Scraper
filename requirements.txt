@@ -5,6 +5,7 @@ click==7.1.2
 fake-useragent==0.1.11
 Flask==1.1.2
 Flask-MySQL==1.5.1
+gunicorn==20.0.4
 idna==2.9
 itsdangerous==1.1.0
 Jinja2==2.11.2
