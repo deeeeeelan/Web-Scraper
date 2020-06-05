@@ -4,3 +4,5 @@ Scripts/
 pyvenv.cfg
 .vscode
 ._pycache_
+conf.py
+config.py

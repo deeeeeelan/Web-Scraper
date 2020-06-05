@@ -21,8 +21,6 @@ def getLinks():
             links.append(r)
             # print(links)
         i+=1
-        
-    
     print(links)
     print(len(links))
     time.sleep(60)
@@ -105,8 +103,8 @@ def getData(url):
         i+=1
     
     print(data)
-    dat = json.dumps(data)
-    sendToDB(dat)
+    # dat = json.dumps(data)
+    # sendToDB(dat)
     print(len(data['list']))
     return data
 
@@ -118,14 +116,14 @@ def getMonthlyInstallment(price):
     return done
 
 
-
+#this sendToDB function is not working for now
 def sendToDB(data):
     app = Flask(__name__)
     app.secret_key= 'secret'
-    app.config['MYSQL_DATABASE_USER'] = 'b86931380feac2'
-    app.config['MYSQL_DATABASE_PASSWORD'] = 'e5bf2af6'
-    app.config['MYSQL_DATABASE_DB'] = 'heroku_3ddf690ab05fef8'
-    app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-east-05.cleardb.net'
+    app.config['MYSQL_DATABASE_USER'] = YOUR_DBUSER
+    app.config['MYSQL_DATABASE_PASSWORD'] = YOUR_DBPASS
+    app.config['MYSQL_DATABASE_DB'] = YOUR_DBNAME
+    app.config['MYSQL_DATABASE_HOST'] = YOUR_DBHOST
 
     #init MySQL
     # mysql = MySQL(app)
