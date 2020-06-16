@@ -13,7 +13,7 @@ def postmethod():
     return res
 
 @app.route("/run", methods =['GET'])
-def getmethod():
+def getmethodx():
     return "Please use POST method instead"
 
 if __name__ == '__main__':
