@@ -8,7 +8,7 @@ Flask-MySQL==1.5.1
 gunicorn==20.0.4
 idna==2.9
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 MarkupSafe==1.1.1
 PyMySQL==0.9.3
 requests==2.23.0
